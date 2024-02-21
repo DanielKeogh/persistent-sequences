@@ -7,7 +7,7 @@ A Persistent/Immutable sequences implementation that builds upon the `persistent
 
 ## Usage
 
-Given that `persistent-sequences` collides with several important functions in the `:common-lisp` namespace it is receommended that this library is used with a local nickname. For example, like this:
+Given that `persistent-sequences` collides with several important functions in the `:common-lisp` namespace it is recommended that this library is used with a local nickname. For example, like this:
 
 ```lisp
 (defpackage my-package
