@@ -39,19 +39,19 @@
 
 (test empty-p
   (is (ps:empty-p (ps:vec)))
-  (is (ps:empty-p (ps:hashtrie)))
+  (is (ps:empty-p (ps:hashmap)))
   (is (ps:empty-p nil))
   (is (not (ps:empty-p (ps:vec 1))))
   (is (not (ps:empty-p (ps:list 1))))
-  (is (not (ps:empty-p (ps:hashtrie 1 1)))))
+  (is (not (ps:empty-p (ps:hashmap 1 1)))))
 
 (test nonempty-p
   (is (not (ps:nonempty-p (ps:vec))))
-  (is (not (ps:nonempty-p (ps:hashtrie))))
+  (is (not (ps:nonempty-p (ps:hashmap))))
   (is (not (ps:nonempty-p nil)))
   (is (ps:nonempty-p (ps:vec 1)))
   (is (ps:nonempty-p (ps:list 1)))
-  (is (ps:nonempty-p (ps:hashtrie 1 1))))
+  (is (ps:nonempty-p (ps:hashmap 1 1))))
 
 ;;; Ordering
 
@@ -63,6 +63,18 @@
 (test reverse
   (is (s= (ps:vec 1 2 3) (ps:reverse (ps:vec 3 2 1))))
   (is (s= nil (ps:reverse nil))))
+
+;;; Builders
+
+(test conj
+      (is (s= (ps:vec 1 2 3) (ps:conj (ps:vec 1 2) 3)))
+      (is (s= (ps:vec 1 2 3) (ps:conj (ps:list 2 3) 1)))
+      (is (s= (ps:vec 1 2 3) (ps:conj (ps:range 2 4) 1)))
+      (is (s= (ps:vec 1) (ps:conj nil 1))))
+
+(test assoc
+  (is (ps:has-key (ps:assoc (ps:hashmap) 1 1) 1))
+  (is (ps:has-key (ps:assoc (ps:treemap #'persistent-tree-map:eq-comparer) 1 1) 1)))
 
 ;;; Growers
 
@@ -147,9 +159,9 @@
   (is (length-assert (ps:list 1 2 3 4 5) 5))
   (is (length-assert (ps:list) 0)))
 
-(test hashtrie-length
-  (is (length-assert (ps:hashtrie 1 1 2 2 3 3 4 4 5 5) 5))
-  (is (length-assert (ps:hashtrie) 0)))
+(test hashmap-length
+  (is (length-assert (ps:hashmap 1 1 2 2 3 3 4 4 5 5) 5))
+  (is (length-assert (ps:hashmap) 0)))
 
 (test sequence-length
   (is (length-assert (ps:range 0 10) 10))
@@ -188,3 +200,24 @@
   (is (= 1 (ps:nth (ps:range 0 10) 1)))
   (is (= 2 (ps:nth (ps:range 0 10) 2))))
 
+;;; Key-Value Sequences
+
+(test keys
+  (is (s= (ps:sort (ps:keys (ps:hashmap 1 0 2 0 3 0 4 0)) #'<) (ps:vec 1 2 3 4)))
+  (is (s= (ps:keys (ps:treemap #'persistent-tree-map:eq-comparer 1 0 2 0 3 0 4 0)) (ps:vec 1 2 3 4))))
+
+(test vals
+  (is (s= (ps:vals (ps:hashmap 1 0 2 0 3 0 4 0)) (ps:vec 0 0 0 0)))
+  (is (s= (ps:vals (ps:treemap #'persistent-tree-map:eq-comparer 1 0 2 0 3 0 4 0)) (ps:vec 0 0 0 0))))
+
+(test has-key
+  (is (ps:has-key (ps:hashmap 1 0) 1))
+  (is (ps:has-key (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 1))
+  (is (not (ps:has-key (ps:hashmap 1 0) 2)))
+  (is (not (ps:has-key (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 2))))
+
+(test val
+  (is (= (ps:val (ps:hashmap 1 0) 1) 0))
+  (is (= (ps:val (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 1) 0))
+  (is (not (ps:val (ps:hashmap 1 0) 2)))
+  (is (not (ps:val (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 2))))

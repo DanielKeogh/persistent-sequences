@@ -12,9 +12,13 @@
   "Create a new persistent list."
   (apply #'persistent-list:list items))
 
-(defun hashtrie (&rest args)
+(defun hashmap (&rest args)
   "Create a new persistent hashtrie."
   (apply #'hashtrie:make-hashtrie args))
+
+(defun treemap (comparer-fn &rest pairs)
+  "Create a new persistent treemap."
+  (apply #'persistent-tree-map:make-tree-map (cons comparer-fn pairs)))
 
 ;; Equality
 
@@ -53,6 +57,14 @@
 
 (defun reverse (seq)
   (cl-list->sequence (cl:reverse (sequence->cl-list seq))))
+
+;; Builders
+
+(defun assoc (collection key value)
+  (add-key-value collection key value))
+
+(defun conj (collection value)
+  (add-value collection value))
 
 ;; Growers
 
@@ -328,3 +340,18 @@
 	unless (funcall itr)
 	  do (error "Seq doesnt have ~a elements" n)
 	finally (return (nth-value 1 (funcall itr)))))
+
+
+;;; Key-Value Sequences
+
+(defun keys (collection)
+  (get-keys collection))
+
+(defun vals (collection)
+  (get-vals collection))
+
+(defun has-key (collection key)
+  (get-key collection key))
+
+(defun val (collection key)
+  (get-val collection key))

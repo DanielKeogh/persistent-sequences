@@ -59,24 +59,3 @@
 	for (has-value value) = (multiple-value-list (funcall itr))
 	while has-value
 	collect value))
-
-;; (defmacro iterator-with-yield ((yield) &body body)
-;;   (let (tags)
-;;     (labels ((walk-tree (tree)
-;; 	       (loop for node in tree
-;; 		     collect
-;; 		     (cond ((listp node)
-;; 			    (if (eq (car node) yield)
-;; 				()
-;; 				()
-				
-;; 				)
-;; 			    )
-
-;; 			   ) if (listp node)
-;; 		     collect (walk-tree node)
-;; 		     else
-;; 		       collect node)))))
-;;   (tagbody )
-
-;;   )

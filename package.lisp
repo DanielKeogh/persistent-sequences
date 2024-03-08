@@ -16,13 +16,15 @@
    #:list
    #:sort
    #:reverse
-   #:nth)
+   #:nth
+   #:assoc)
   
   (:export
-   ;; Builders
+   ;; Constructors
    #:vec
    #:list
-   #:hashtrie
+   #:hashmap
+   #:treemap
 
    ;; Equality
    #:sequence-equal
@@ -33,6 +35,10 @@
    ;; Ordering
    #:sort
    #:reverse
+
+   ;; Builders
+   #:assoc
+   #:conj
    
    ;; Growers
    #:range
@@ -60,7 +66,13 @@
    #:map
    #:for
 
-   ;;Nth
+   ;; Nth
    #:last
    #:first
-   #:nth))
+   #:nth
+
+   ;; Key-Value Sequence
+   #:keys
+   #:vals
+   #:has-key
+   #:val))
