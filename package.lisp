@@ -17,7 +17,8 @@
    #:sort
    #:reverse
    #:nth
-   #:assoc)
+   #:assoc
+   #:subseq)
   
   (:export
    ;; Constructors
@@ -57,6 +58,10 @@
    #:skip-while
    #:rest
    #:but-last
+   #:subseq
+
+   ;; Searchers
+   #:contains-p
 
    ;; Aggregates
    #:length

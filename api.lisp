@@ -286,6 +286,19 @@
 		       next value)
 		 (values return-has-value return-value))))))))))
 
+(defun subseq (seq start &optional end)
+  (if end
+      (take (skip seq start) (- end start))
+      (skip seq start)))
+
+;;; Searchers
+
+(defun contains-p (seq item &key (test 'eq))
+  (loop with itr = (get-iterator seq)
+	for (has-val val) = (multiple-value-list (funcall itr))
+	while has-val
+	  thereis (funcall test val item)))
+
 ;;; Aggregates
 
 (defun length (seq)

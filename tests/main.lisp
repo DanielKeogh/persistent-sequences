@@ -144,6 +144,18 @@
   (is (s= (ps:but-last nil) nil))
   (is (s= (ps:but-last (ps:vec 1 2 3)) (ps:vec 1 2))))
 
+(test subseq
+  (is (s= (ps:subseq (ps:range) 5 10) (ps:vec 5 6 7 8 9)))
+  (is (s= (ps:subseq (ps:range 0 10) 5) (ps:vec 5 6 7 8 9))))
+
+;;; Searchers
+
+(test contains-p
+  (is (ps:contains-p (ps:range) 100))
+  (is (not (ps:contains-p (ps:range 0 10) 100)))
+  (is (ps:contains-p (ps:vec "abba" nil "scream" "test") "tEst" :test 'equalp))
+  (is (null (ps:contains-p (ps:vec "abba" nil "scream" "test") "tEst" :test 'eq))))
+
 ;;; Aggregates
 
 ;; Length
