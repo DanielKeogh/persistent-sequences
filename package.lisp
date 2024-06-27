@@ -33,6 +33,18 @@
    #:empty-p
    #:nonempty-p
 
+   ;; Comparers
+   #:<-comparer
+   #:>-comparer
+   #:char<-comparer
+   #:char>-comparer
+   #:char-lessp-comparer
+   #:char-greaterp-comparer
+   #:string<-comparer
+   #:string>-comparer
+   #:string-lessp-comparer
+   #:string-greaterp-comparer
+
    ;; Ordering
    #:sort
    #:reverse

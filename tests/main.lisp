@@ -53,12 +53,34 @@
   (is (ps:nonempty-p (ps:list 1)))
   (is (ps:nonempty-p (ps:hashmap 1 1))))
 
+;;; Comparers
+
+(test =
+  (is (s= (ps:vec 1 2 3) (ps:sort (ps:vec 3 2 1) #'ps:<-comparer)))
+  (is (s= (ps:vec 3 2 1) (ps:sort (ps:vec 1 2 3) #'ps:>-comparer))))
+
+(test char=
+  (is (s= (ps:vec #\a #\b #\c) (ps:sort (ps:vec #\c #\b #\a) #'ps:char<-comparer)))
+  (is (s= (ps:vec #\c #\b #\a) (ps:sort (ps:vec #\a #\b #\c) #'ps:char>-comparer))))
+
+(test char-equal
+  (is (s= (ps:vec #\A #\b #\C) (ps:sort (ps:vec #\C #\b #\A) #'ps:char-lessp-comparer)))
+  (is (s= (ps:vec #\C #\b #\A) (ps:sort (ps:vec #\A #\b #\C) #'ps:char-greaterp-comparer))))
+
+(test string=
+  (is (s= (ps:vec "a" "b" "c") (ps:sort (ps:vec "c" "b" "a") #'ps:string<-comparer)))
+  (is (s= (ps:vec "c" "b" "a") (ps:sort (ps:vec "a" "b" "c") #'ps:string>-comparer))))
+
+(test string-equal
+  (is (s= (ps:vec "A" "b" "C") (ps:sort (ps:vec "C" "b" "A") #'ps:string-lessp-comparer)))
+  (is (s= (ps:vec "C" "b" "A") (ps:sort (ps:vec "A" "b" "C") #'ps:string-greaterp-comparer))))
+
 ;;; Ordering
 
 (test sort
-  (is (s= (ps:vec 1 2 3) (ps:sort (ps:vec 3 2 1) '<)))
-  (is (s= (ps:vec 1) (ps:sort (ps:vec 1) '<)))
-  (is (s= (ps:vec) (ps:sort (ps:vec) '<))))
+  (is (s= (ps:vec 1 2 3) (ps:sort (ps:vec 3 2 1) #'ps:<-comparer)))
+  (is (s= (ps:vec 1) (ps:sort (ps:vec 1)  #'ps:<-comparer)))
+  (is (s= (ps:vec) (ps:sort (ps:vec) #'ps:<-comparer))))
 
 (test reverse
   (is (s= (ps:vec 1 2 3) (ps:reverse (ps:vec 3 2 1))))
@@ -66,15 +88,15 @@
 
 ;;; Builders
 
-(test conj
-      (is (s= (ps:vec 1 2 3) (ps:conj (ps:vec 1 2) 3)))
-      (is (s= (ps:vec 1 2 3) (ps:conj (ps:list 2 3) 1)))
-      (is (s= (ps:vec 1 2 3) (ps:conj (ps:range 2 4) 1)))
-      (is (s= (ps:vec 1) (ps:conj nil 1))))
-
 (test assoc
   (is (ps:has-key (ps:assoc (ps:hashmap) 1 1) 1))
-  (is (ps:has-key (ps:assoc (ps:treemap #'persistent-tree-map:eq-comparer) 1 1) 1)))
+  (is (ps:has-key (ps:assoc (ps:treemap #'ps:<-comparer) 1 1) 1)))
+
+(test conj
+  (is (s= (ps:vec 1 2 3) (ps:conj (ps:vec 1 2) 3)))
+  (is (s= (ps:vec 1 2 3) (ps:conj (ps:list 2 3) 1)))
+  (is (s= (ps:vec 1 2 3) (ps:conj (ps:range 2 4) 1)))
+  (is (s= (ps:vec 1) (ps:conj nil 1))))
 
 ;;; Growers
 
@@ -109,7 +131,7 @@
 
 (test filter
   (is (s= (ps:filter (ps:range 0 10) #'evenp) (ps:vec 0 2 4 6 8))
-  (is (s= (ps:filter (ps:range 0 10) (lambda ())) (ps:vec)))))
+      (is (s= (ps:filter (ps:range 0 10) (lambda ())) (ps:vec)))))
 
 (test distinct
   (is (s= (ps:distinct (ps:vec 1 1 1 1 1 1)) (ps:vec 1)))
@@ -215,21 +237,21 @@
 ;;; Key-Value Sequences
 
 (test keys
-  (is (s= (ps:sort (ps:keys (ps:hashmap 1 0 2 0 3 0 4 0)) #'<) (ps:vec 1 2 3 4)))
-  (is (s= (ps:keys (ps:treemap #'persistent-tree-map:eq-comparer 1 0 2 0 3 0 4 0)) (ps:vec 1 2 3 4))))
+  (is (s= (ps:sort (ps:keys (ps:hashmap 1 0 2 0 3 0 4 0)) #'ps:<-comparer) (ps:vec 1 2 3 4)))
+  (is (s= (ps:keys (ps:treemap #'ps:<-comparer 1 0 2 0 3 0 4 0)) (ps:vec 1 2 3 4))))
 
 (test vals
   (is (s= (ps:vals (ps:hashmap 1 0 2 0 3 0 4 0)) (ps:vec 0 0 0 0)))
-  (is (s= (ps:vals (ps:treemap #'persistent-tree-map:eq-comparer 1 0 2 0 3 0 4 0)) (ps:vec 0 0 0 0))))
+  (is (s= (ps:vals (ps:treemap #'ps:<-comparer 1 0 2 0 3 0 4 0)) (ps:vec 0 0 0 0))))
 
 (test has-key
   (is (ps:has-key (ps:hashmap 1 0) 1))
-  (is (ps:has-key (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 1))
+  (is (ps:has-key (ps:treemap #'ps:<-comparer 1 0) 1))
   (is (not (ps:has-key (ps:hashmap 1 0) 2)))
-  (is (not (ps:has-key (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 2))))
+  (is (not (ps:has-key (ps:treemap #'ps:<-comparer 1 0) 2))))
 
 (test val
   (is (= (ps:val (ps:hashmap 1 0) 1) 0))
-  (is (= (ps:val (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 1) 0))
+  (is (= (ps:val (ps:treemap #'ps:<-comparer 1 0) 1) 0))
   (is (not (ps:val (ps:hashmap 1 0) 2)))
-  (is (not (ps:val (ps:treemap #'persistent-tree-map:eq-comparer 1 0) 2))))
+  (is (not (ps:val (ps:treemap #'ps:<-comparer 1 0) 2))))
