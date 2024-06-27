@@ -1,7 +1,7 @@
 ;;;; tests/package.lisp
 
-(defpackage #:persistent-sequences-tests
+(defpackage #:com.danielkeogh.persistent-sequences-tests
   (:use #:cl #:fiveam)
-  (:local-nicknames (#:ps #:persistent-sequences))
+  (:local-nicknames (#:ps #:com.danielkeogh.persistent-sequences))
   (:export #:run!
 	   #:all-tests))

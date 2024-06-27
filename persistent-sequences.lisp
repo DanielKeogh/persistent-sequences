@@ -1,6 +1,6 @@
 ;;;; persistent-sequences.lisp
 
-(in-package #:persistent-sequences)
+(in-package #:com.danielkeogh.persistent-sequences)
 
 (defstruct (persistent-sequence (:conc-name ps-))
   (iterator nil :type function))
@@ -67,3 +67,46 @@
         while has-value
         do (vector-push-extend value vector)
         finally (return vector)))
+
+(defun %merge-sort (seq comparer-fn key-fn)
+  (let ((comparer (if key-fn
+                      (lambda (arg1 arg2)
+                        (funcall comparer-fn
+                                 (funcall key-fn arg1)
+                                 (funcall key-fn arg2)))
+                      comparer-fn)))
+    (flet ((compare (arg1 arg2) (funcall comparer arg1 arg2)))
+      (loop with source = (sequence->vector seq)
+            with len = (cl:length source)
+            with target = (make-array len)
+            for offset = 1 then (+ offset offset)
+            while (<= offset len) do
+              (loop for block below len by (+ offset offset) do
+                (loop for target-index from block below len
+                      with i = block
+                      with j = (+ block offset)
+                      with max-i = j
+                      with max-j = (min len (+ j offset))
+                      do
+                         (cond ((= i max-i)
+                                (loop for s-x from j below max-j
+                                      for t-x from target-index
+                                      do (setf (aref target t-x) (aref source s-x)))
+                                (return))
+                               ((>= j max-j)
+                                (loop for s-x from i below (min max-i len)
+                                      for t-x from target-index
+                                      do (setf (aref target t-x) (aref source s-x)))
+                                (return))
+                               (t
+                                (let ((i-val (aref source i))
+                                      (j-val (aref source j)))
+                                  (if (<= (compare i-val j-val) 0)
+                                      (progn
+                                        (setf (aref target target-index) i-val)
+                                        (incf i))
+                                      (progn
+                                        (setf (aref target target-index) j-val)
+                                        (incf j))))))))
+              (rotatef source target)
+            finally (return source)))))

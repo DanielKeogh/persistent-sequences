@@ -1,6 +1,6 @@
 ;;;; package.lisp
 
-(defpackage #:persistent-sequences
+(defpackage #:com.danielkeogh.persistent-sequences
   (:local-nicknames (:vec #:persistent-vector)
 		    (:tri #:hashtrie)
 		    (:lst #:persistent-list)

@@ -1,6 +1,6 @@
 ;;;; tests/main.lisp
 
-(in-package #:persistent-sequences-tests)
+(in-package #:com.danielkeogh.persistent-sequences-tests)
 
 (def-suite all-tests
   :description "Main test suite for persistent-sequences")

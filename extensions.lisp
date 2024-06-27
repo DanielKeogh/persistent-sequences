@@ -1,6 +1,6 @@
 ;;;; extensions.lisp
 
-(in-package #:persistent-sequences)
+(in-package #:com.danielkeogh.persistent-sequences)
 
 ;;; Generic definitions
 
