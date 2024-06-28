@@ -4,7 +4,7 @@
   :description "Tests for persistent-sequences"
   :author "Daniel Keogh"
   :license "Eclipse 2.0"
-  :depends-on (:persistent-sequences :fiveam)
+  :depends-on (:com.danielkeogh.persistent-sequences :fiveam)
   :components ((:module "tests"
                 :serial t
                 :components ((:file "package")
